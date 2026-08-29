@@ -18,24 +18,25 @@ class Uvod extends BaseController {
         // $this->form_validation->set_rules('username','Username','trim|required');
         // $this->form_validation->set_rules('password','Password','trim|required');
 
-        $agent = 'CI4_Mock';
+        $agent = $this->request->getUserAgent()->getBrowser();
 
-        $_SESSION['bro'] = $agent;
-        $_SESSION['pla'] = 'CI4_Mock_Platform';
+        $session = \Config\Services::session();
+        $session->set('bro', $agent);
+        $session->set('pla', $this->request->getUserAgent()->getPlatform());
+        $session->set('ipa', $this->request->getIPAddress());
 
-        $_SESSION['ipa'] = $_SERVER['REMOTE_ADDR'];
-        if (false) {
+        if ($this->request->getServer("HTTP_CLIENT_IP")) {
             $ip = getenv("HTTP_CLIENT_IP");
-        } elseif (false) {
-            $ip = getenv("HTTP_X_FORWARDED_FOR");
+        } elseif ($this->request->getServer("HTTP_X_FORWARDED_FOR")) {
+            $ip = $this->request->getServer("HTTP_X_FORWARDED_FOR");
             if ( strstr($ip, ',') ) {
                 $tmp = explode(',', $ip);
                 $ip = trim($tmp[0]);
             }
         } else {
-            $ip = getenv("REMOTE_ADDR");
+            $ip = $this->request->getIPAddress();
         }
-        $_SESSION['ipb'] = $ip;
+        $session->set('ipb', $ip);
 
         if(true){
             if($username=='Vie Vénosová'){
@@ -83,12 +84,12 @@ class Uvod extends BaseController {
                     'DO' => '',
                     'AGENT' => $agent,
                     'MENO' => $d->MENO,
-                    'PLATFORM' => $_SESSION['pla'],
-                    'IP' => $_SESSION['ipa'],
-                    'IPB' => $_SESSION['ipb'],
+                    'PLATFORM' => session('pla'),
+                    'IP' => session('ipa'),
+                    'IPB' => session('ipb'),
                     'ARCINTCIS' => ''
                 );
-                $this->m_site->insert_data($data,'wuzivlog');
+                (new \App\Models\M_site())->insert_data($data,'wuzivlog');
 
                 // if($d->PRIORITA!=9){
                 //     redirect(site_url('ulohy/list'));
@@ -105,12 +106,12 @@ class Uvod extends BaseController {
                     'DO' => '',
                     'AGENT' => $agent,
                     'MENO' => $username,
-                    'PLATFORM' => $_SESSION['pla'],
-                    'IP' => $_SESSION['ipa'],
-                    'IPB' => $_SESSION['ipb'],
+                    'PLATFORM' => session('pla'),
+                    'IP' => session('ipa'),
+                    'IPB' => session('ipb'),
                     'ARCINTCIS' => ''
                 );
-                // $this->m_site->insert_data($data,'wuzivlogfake');
+                // (new \App\Models\M_site())->insert_data($data,'wuzivlogfake');
 
                 return redirect()->to('/uvod?msg=faillogin');
             }

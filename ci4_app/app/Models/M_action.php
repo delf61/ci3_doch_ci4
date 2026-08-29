@@ -37,8 +37,9 @@ class M_action extends Model {
             "phone_no" => "1231654981"
         );
 
-        $this->db->where("id", 1);
-        $this->db->update("users", $data);
+        $builder = $this->db->table("users");
+        $builder->where("id", 1);
+        $builder->update($data);
 
         return True;
     }
@@ -57,42 +58,28 @@ class M_action extends Model {
         //$this->db->where("id",4);
         //return $this->db->delete("users");
         // delete from tbl_users where id =4
-        return $this->db->delete("users", array(
-                    "id" => 3
-        ));
+        $builder = $this->db->table("users");
+        $builder->where("id", 3);
+        return $builder->delete();
     }
 
     public function get_where_condition_query() {
 
-        $this->db->select("*");
-        $this->db->from("users"); // tbl_users
-        $this->db->where("salary >=", 4500);
-        /*
-         *  $this->db->where("salary >=",4500); -> greater than equal to
-         *  $this->db->where("salary <=",4500); -> less than equal to
-         *  $this->db->where("salary =",4500); ->  equal to
-         *  $this->db->where("salary !=",4500); ->  not equal to
-         *  $this->db->where("salary >",4500); ->  not equal to
-         *  $this->db->where("salary <",4500); ->  not equal to
-         *
-         */
-        $query = $this->db->get();
+        $builder = $this->db->table("users");
+        $builder->select("*");
+        $builder->where("salary >=", 4500);
+        $query = $builder->get();
         // select * from tbl_users where salary >= 4500
         return $result = $query->getResult();
     }
 
     public function get_and_condition() {
 
-        $this->db->select("*");
-        $this->db->from("users");
-        /* $this->db->where(array(
-          "id"=>1,
-          "email"=>"onlinewebtutorhub@gmail.com1",
-          )); */
-        $this->db->where("id", 1);
-        $this->db->or_where("email", 'onlinewebtutorhub@gmail.com1');
-
-        $query = $this->db->get();
+        $builder = $this->db->table("users");
+        $builder->select("*");
+        $builder->where("id", 1);
+        $builder->orWhere("email", "onlinewebtutorhub@gmail.com1");
+        $query = $builder->get();
         return $result = $query->getResult();
         // select * from tbl_users where id = 1 AND email = 'onlinewebtutorhub@gmail.com'
         // select * from tbl_users where id = 1 OR email = 'onlinewebtutorhub@gmail.com'
@@ -100,26 +87,19 @@ class M_action extends Model {
 
     public function get_where_in() {
 
-        $this->db->select("*");
-        $this->db->from("tbl_users");
-        //$this->db->where_in("salary", array(4500, 6000, 10000));
-        //$this->db->where_in("email", array('onlinewebtutorhub@gmail.com', 'ashish@gmail.com', 'sample@test.com'));
-        //$this->db->like("email", "gmail.com", "none"); // gmail.com
-        //$this->db->like("email", "esh", "both"); // gmail.com
-        $this->db->like("email", "rahul", "after"); // rahul%
-        $query = $this->db->get();
+        $builder = $this->db->table("tbl_users");
+        $builder->select("*");
+        $builder->like("email", "rahul", "after");
+        $query = $builder->get();
         return $result = $query->getResult();
     }
 
     public function get_user_messages() {
 
-        // join tbl_users => id, match user_id inside tbl_messages
-        $this->db->select("user.*,message.message");
-        $this->db->from("tbl_users as user");
-        //$this->db->join("tbl_messages as message", "user.id = message.user_id", "left");
-        //$this->db->join("tbl_messages as message", "user.id = message.user_id", "right");
-        $this->db->join("tbl_messages as message", "user.id = message.user_id", "inner");
-        $query = $this->db->get();
+        $builder = $this->db->table("tbl_users as user");
+        $builder->select("user.*,message.message");
+        $builder->join("tbl_messages as message", "user.id = message.user_id", "inner");
+        $query = $builder->get();
         // select user.*,message.message from tbl_users as user INNER JOIN tbl_messages as message ON user.id = message.user_id
         return $result = $query->getResult();
     }

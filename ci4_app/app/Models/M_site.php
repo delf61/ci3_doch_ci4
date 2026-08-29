@@ -29,48 +29,57 @@ class M_site extends Model {
         return $this->db->table($table)->getWhere($where);
     }
     function get_data($table){
-        $pr=$this->db->get($table);
+        $builder = $this->db->table($table);
+        $pr = $builder->get();
         return $pr->getResult();
-        //return $this->db->get($table);
     }
     function get_zak($table){
-        $this->db->select("CISZAK");
-        $this->db->group_by("CISZAK");
-        $pr=$this->db->get($table);
+        $builder = $this->db->table($table);
+        $builder->select("CISZAK");
+        $builder->groupBy("CISZAK");
+        $pr=$builder->get();
         return $pr->getResult();
     }
     function insert_data($data, $table){
-        $this->db->insert($table, $data);
+        $builder = $this->db->table($table);
+        $builder->insert($data);
     }
     function update_data($where, $data, $table){
-        $this->db->where($where);
-        $this->db->update($table, $data);
+        $builder = $this->db->table($table);
+        $builder->where($where);
+        $builder->update($data);
     }
     function delete_data($where, $table){
-        $this->db->where($where);
-        $this->db->delete($table);
+        $builder = $this->db->table($table);
+        $builder->where($where);
+        $builder->delete();
     }
     function delete_day($table){
-        $this->db->where('D', date('d.m.Y'));
-        $this->db->delete($table);
+        $builder = $this->db->table($table);
+        $builder->where('D', date('d.m.Y'));
+        $builder->delete();
     }
     function delete_all($table){
-        $this->db->truncate($table);
+        $builder = $this->db->table($table);
+        $builder->truncate();
     }
     function _updateRowWhere($table, $where = array(), $data = array()) {
-        $this->db->where($where);
-        $this->db->update($table, $data);
+        $builder = $this->db->table($table);
+        $builder->where($where);
+        $builder->update($data);
     }
     function _updateQuery_ok() {
-        $this->db->like("PREDMET", "¾", "both");
-        $this->db->set("PREDMET", "OKKKKKKKKKKKKKKK");
-        $this->db->update("wevizak");
+        $builder = $this->db->table("wevizak");
+        $builder->like("PREDMET", "¾", "both");
+        $builder->set("PREDMET", "OKKKKKKKKKKKKKKK");
+        $builder->update();
         return True;
     }
     function _updateQuery($table, $field, $str1, $str2) {
-        $this->db->where("id =", $str1);
-        $this->db->set($field, $str2);
-        $this->db->update($table);
+        $builder = $this->db->table($table);
+        $builder->where("id =", $str1);
+        $builder->set($field, $str2);
+        $builder->update();
         return True;
     }
     function w1250_to_utf8($fn) {
@@ -142,10 +151,10 @@ class M_site extends Model {
         //return html_entity_decode(mb_convert_encoding(strtr($text, $map), 'UTF-8', 'ISO-8859-2'), ENT_QUOTES, 'UTF-8');
     }
     function alter_id(){
-        $tables = $this->db->list_tables();
+        $tables = $this->db->listTables();
         foreach ($tables as $table){
             echo $table."<br>";
-            if ($this->db->field_exists('id', $table)){
+            if ($this->db->fieldExists('id', $table)){
 
                     $this->db->query('ALTER TABLE '.$table.' MODIFY COLUMN id INT(11) NOT NULL AUTO_INCREMENT');
 

@@ -32,3 +32,4 @@ ci4_app/app/Config/
 ci4_app/app/Views/errors/
 ci4_app/app/Language/
 ci4_app/app/Common.php
+ci4_app/server_log.txt

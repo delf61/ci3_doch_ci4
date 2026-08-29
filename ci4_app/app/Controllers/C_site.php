@@ -6,7 +6,7 @@ class C_site extends BaseController {
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
-    }
+        $this->db = \Config\Database::connect();
     }
     function getdata()
     {
@@ -93,13 +93,13 @@ class C_site extends BaseController {
         { //echo $table;
             $pocet_tab = count( $tables );
             $akt_tab = ($akt_tab + 1);
-            $this->db->select("*");
-            $this->db->from($table);
-            $query = $this->db->get();
-            $fields = $query->field_data();
-            $cnt = $query->num_fields();
-            $tab = $query->result();
-            $r_cnt = $query->num_rows();
+            $builder = $this->db->table($table);
+            $builder->select("*");
+            $query = $builder->get();
+            $fields = $query->getFieldData();
+            $cnt = $query->getFieldCount();
+            $tab = $query->getResult();
+            $r_cnt = $query->getNumRows();
             ob_flush();
             flush(); // to tell the operating system to flush it's buffers to the user.
             //sleep(1);
@@ -163,16 +163,16 @@ class C_site extends BaseController {
 
                         //for($x = 0; $x < $pocet; $x++) {
                         for($x = 0; $x < $pocet; $x++) {
-                            $this->db->select("id," . $name );
-                            $this->db->from($table);
-                            $this->db->like($name, $znak[$x], "both");
-                            $query1 = $this->db->get();
+                            $builder2 = $this->db->table($table);
+                            $builder2->select("id," . $name );
+                            $builder2->like($name, $znak[$x], "both");
+                            $query1 = $builder2->get();
                             // echo "<pre>";
                             // //print_r($query1);
                             // echo "</pre>";
-                            $tab1 = $query1->result();
-                            $cnt1 = $query1->num_rows();
-                            $cnt2 = $query->num_fields();
+                            $tab1 = $query1->getResult();
+                            $cnt1 = $query1->getNumRows();
+                            $cnt2 = $query->getFieldCount();
                             // echo "<pre>";
                             // print_r($tab1);
                             // echo "</pre>";
