@@ -7,6 +7,7 @@ class C_action extends BaseController {
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
+        $this->m_action = new \App\Models\M_action();
     }
     public function get_all_data() {
         $this->m_action = new \App\Models\M_action();

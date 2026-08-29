@@ -4,6 +4,7 @@ use CodeIgniter\Model;
 
 class M_action extends Model {
 
+    protected $db;
     public function __construct() {
         parent::__construct();
         $this->db = \Config\Database::connect();
@@ -44,13 +45,11 @@ class M_action extends Model {
 
     public function get_all_users_data() {
 
-        $this->db->select("*");
-        $this->db->from("users"); // tbl_users
-        //$this->db->where("id", 1);
-        $query = $this->db->get();
+        $builder = $this->db->table('_uzivatelia');
+        $builder->select('*');
+        $query = $builder->get();
         // select * from tbl_users where id = 1
-        return $result = $query->result_array();
-        return $result = $query->row_array();
+        return $result = $query->getResultArray();
     }
 
     public function delete_specific_user() {
